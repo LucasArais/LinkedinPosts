@@ -1,0 +1,55 @@
+name: browser-sandbox CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "browser-sandbox/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "browser-sandbox/**"
+      - ".github/workflows/ci.yml"
+
+defaults:
+  run:
+    working-directory: browser-sandbox
+
+jobs:
+  unit-tests:
+    name: Layer 1 - guardrails unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: pytest tests/test_guardrails_unit.py -v
+
+  container-tests:
+    name: Layers 2 and 4 - real Docker + Playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: docker build -t browser-sandbox:latest -f docker/Dockerfile .
+      - run: pytest tests/test_sandbox_integration.py -v
+      - run: pytest tests/test_load.py -v -s
+
+  adversarial-deterministic:
+    name: Layer 3 (deterministic half) - forced SSRF block
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: docker build -t browser-sandbox:latest -f docker/Dockerfile .
+      # test_agent_reaction_to_trap_page is skipped automatically without
+      # ANTHROPIC_API_KEY - only the deterministic proof test runs in CI.
+      - run: pytest tests/test_adversarial_agent.py -v

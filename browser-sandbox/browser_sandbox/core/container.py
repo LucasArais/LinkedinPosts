@@ -14,7 +14,7 @@ from typing import List
 
 import requests
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 IMAGE_NAME = "browser-sandbox:latest"
 
 

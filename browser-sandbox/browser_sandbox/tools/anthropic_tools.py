@@ -15,7 +15,7 @@ funciona identico non importa quem esta chamando.
 
 from typing import Any, Dict
 
-from core.client import BrowserSandboxClient
+from browser_sandbox.core.client import BrowserSandboxClient
 
 BROWSER_TOOL_SCHEMAS = [
     {

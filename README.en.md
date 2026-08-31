@@ -15,7 +15,7 @@ public journal of things I'm exploring, not a single product.
 | Project | Description | Stack |
 |---|---|---|
 | [guarded-agent](guarded-agent/) | Autonomous LLM-based agent (Claude + tool calling) with a model-independent guardrails/circuit-breaker layer: per-task tool allowlist, call limit, kill switch, and JSONL audit log. | Python, Anthropic API |
-| [browser-sandbox](browser-sandbox/) | Headless browser (Playwright) isolated in a Docker container, controlled by an agent via tool calling: domain allowlist, SSRF/private-IP blocking, download checks by magic bytes, and session limits — built to be pluggable into any agent framework, not just my own code. | Python, Playwright, Docker, Anthropic API |
+| [browser-sandbox](browser-sandbox/) | Headless browser (Playwright) isolated in a Docker container, controlled by an agent via tool calling: domain allowlist, SSRF/private-IP blocking, download checks by magic bytes, and session limits. Packaged as a real pip package, with ready-made adapters for Anthropic and LangChain. | Python, Playwright, Docker, LangChain, Anthropic API |
 
 Each project has its own `README.md` with architecture, design decisions,
 and instructions on how to run it — start there.

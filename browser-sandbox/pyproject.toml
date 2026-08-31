@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "browser-sandbox"
+version = "0.1.0"
+description = "An isolated, headless browser for LLM agents, pluggable into any tool-calling framework."
+readme = "README.en.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Lucas Arais" }]
+keywords = ["agents", "llm", "browser", "playwright", "sandbox", "security", "langchain", "anthropic", "tool-calling"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "playwright>=1.47.0",
+    "flask>=3.0.0",
+    "requests>=2.32.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40.0"]
+langchain = ["langchain-core>=0.3.0", "pydantic>=2.0"]
+dev = ["pytest>=8.0.0", "anthropic>=0.40.0", "langchain-core>=0.3.0", "pydantic>=2.0"]
+
+[project.urls]
+Homepage = "https://github.com/LucasArais/LinkedinPosts/tree/main/browser-sandbox"
+Repository = "https://github.com/LucasArais/LinkedinPosts"
+
+[tool.setuptools.packages.find]
+include = ["browser_sandbox*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

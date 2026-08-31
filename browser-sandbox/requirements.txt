@@ -1,5 +1,11 @@
+# Instalação rápida para desenvolvimento local. O caminho canônico do
+# pacote é o pyproject.toml — prefira `pip install -e ".[dev]"`, que também
+# instala os extras opcionais (anthropic, langchain). Este arquivo existe
+# só como atalho equivalente, sem precisar de instalação editável.
 playwright>=1.47.0
 flask>=3.0.0
 requests>=2.32.0
 pytest>=8.0.0
 anthropic>=0.40.0
+langchain-core>=0.3.0
+pydantic>=2.0

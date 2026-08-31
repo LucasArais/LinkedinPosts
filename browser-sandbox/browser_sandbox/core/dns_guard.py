@@ -9,7 +9,7 @@ Camada 2 (testes de integracao), nao pela Camada 1.
 import socket
 from typing import List
 
-from guardrails.network_guard import is_blocked_ip
+from browser_sandbox.guardrails.network_guard import is_blocked_ip
 
 
 def resolve_ips(hostname: str) -> List[str]:

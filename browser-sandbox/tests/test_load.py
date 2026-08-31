@@ -19,7 +19,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from core.container import docker_available, image_exists, build_image, start_container
+from browser_sandbox.core.container import docker_available, image_exists, build_image, start_container
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 

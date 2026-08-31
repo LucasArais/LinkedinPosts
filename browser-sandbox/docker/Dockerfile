@@ -17,14 +17,10 @@ WORKDIR /app
 # /root/.cache, invisiveis para o usuario nao-root que roda o servidor.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt \
+COPY pyproject.toml .
+COPY browser_sandbox/ ./browser_sandbox/
+RUN pip install --no-cache-dir . \
     && playwright install --with-deps chromium
-
-COPY guardrails/ ./guardrails/
-COPY audit/ ./audit/
-COPY core/ ./core/
-COPY tools/ ./tools/
 
 # Diretorios que os bind mounts vao cobrir em runtime; existem aqui so para
 # que o container funcione mesmo se subir sem nenhum mount (ex: nos testes
@@ -39,4 +35,4 @@ USER sandbox
 
 EXPOSE 8088
 
-CMD ["python", "-m", "core.browser_server"]
+CMD ["python", "-m", "browser_sandbox.core.browser_server"]

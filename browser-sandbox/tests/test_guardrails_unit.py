@@ -8,11 +8,11 @@ todo commit.
 
 import pytest
 
-from guardrails.domain_allowlist import build_domain_allowlist
-from guardrails.file_guard import DEFAULT_BLOCKED_EXTENSIONS, evaluate_download, sniff_executable
-from guardrails.network_guard import is_blocked_ip, is_ip_literal
-from guardrails.policy import BrowserSandboxPolicy, Decision
-from guardrails.session_limits import SessionLimiter, SessionLimits
+from browser_sandbox.guardrails.domain_allowlist import build_domain_allowlist
+from browser_sandbox.guardrails.file_guard import DEFAULT_BLOCKED_EXTENSIONS, evaluate_download, sniff_executable
+from browser_sandbox.guardrails.network_guard import is_blocked_ip, is_ip_literal
+from browser_sandbox.guardrails.policy import BrowserSandboxPolicy, Decision
+from browser_sandbox.guardrails.session_limits import SessionLimiter, SessionLimits
 
 
 # ---------------------------------------------------------------------------

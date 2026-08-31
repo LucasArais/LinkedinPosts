@@ -15,7 +15,7 @@ público de coisas que estou explorando, não um produto único.
 | Projeto | Descrição | Stack |
 |---|---|---|
 | [guarded-agent](guarded-agent/) | Agente autônomo baseado em LLM (Claude + tool calling) com uma camada de guardrails/circuit breaker independente do modelo: allowlist de ferramentas por tarefa, limite de chamadas, kill switch e log de auditoria em JSONL. | Python, Anthropic API |
-| [browser-sandbox](browser-sandbox/) | Browser headless (Playwright) isolado em container Docker, controlado por um agente via tool calling: allowlist de domínio, bloqueio de SSRF/IP privado, checagem de download por magic bytes e limites de sessão — pensado para ser plugável em qualquer framework de agente, não só no meu código. | Python, Playwright, Docker, Anthropic API |
+| [browser-sandbox](browser-sandbox/) | Browser headless (Playwright) isolado em container Docker, controlado por um agente via tool calling: allowlist de domínio, bloqueio de SSRF/IP privado, checagem de download por magic bytes e limites de sessão. Empacotado como pip package de verdade, com adapters prontos para Anthropic e LangChain. | Python, Playwright, Docker, LangChain, Anthropic API |
 
 Cada projeto tem seu próprio `README.md` com arquitetura, decisões de design e
 instruções de como rodar — comece por lá.

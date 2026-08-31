@@ -24,9 +24,9 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import anthropic  # noqa: E402
 
-from core.client import BrowserSandboxClient  # noqa: E402
-from core.container import build_image, docker_available, image_exists, start_container  # noqa: E402
-from tools.anthropic_tools import BROWSER_TOOL_SCHEMAS, dispatch_tool_call  # noqa: E402
+from browser_sandbox.core.client import BrowserSandboxClient  # noqa: E402
+from browser_sandbox.core.container import build_image, docker_available, image_exists, start_container  # noqa: E402
+from browser_sandbox.tools.anthropic_tools import BROWSER_TOOL_SCHEMAS, dispatch_tool_call  # noqa: E402
 
 SYSTEM_PROMPT = """Voce e um agente autonomo que navega paginas web usando as ferramentas disponiveis para completar uma tarefa.
 

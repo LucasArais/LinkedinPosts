@@ -2,9 +2,16 @@
 
 [🇧🇷 Português](README.md) | 🇺🇸 English
 
+[![CI](https://github.com/LucasArais/LinkedinPosts/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasArais/LinkedinPosts/actions/workflows/ci.yml)
+
 A headless browser (Playwright + Chromium), isolated in a Docker
 container, controlled by an LLM agent via tool calling — built to be
 **pluggable into any agent framework**, not tied to my own code.
+
+Packaged as a real Python package (`pyproject.toml`, `pip install`), with
+ready-made adapters for **Anthropic** and **LangChain** — the goal isn't
+just to demonstrate the pattern, it's to become something the
+agent-builder community can actually install and use.
 
 Portfolio project, second piece in a series about agent containment. The
 first was [guarded-agent](../guarded-agent/), a circuit breaker for
@@ -47,25 +54,30 @@ speak HTTP can use this sandbox.
 
 ```
 browser-sandbox/
-├── core/
-│   ├── browser_server.py  # runs INSIDE the container - Playwright + guardrails + HTTP API
-│   ├── client.py           # thin HTTP client - runs OUTSIDE the container, framework-agnostic
-│   ├── container.py        # programmatic container lifecycle (build/start/stop)
-│   └── dns_guard.py         # post-DNS SSRF protection (domains resolving to a private IP)
-├── guardrails/
-│   ├── policy.py             # composes everything below - heart of the project
-│   ├── domain_allowlist.py   # per-session domain allowlist (exact match or regex)
-│   ├── network_guard.py      # private/reserved IP blocking (SSRF, no I/O)
-│   ├── file_guard.py         # download blocking by extension + magic bytes
-│   └── session_limits.py     # limit on pages navigated and session duration
-├── audit/logger.py           # append-only JSONL log
-├── tools/anthropic_tools.py  # tool_use schemas + dispatcher
+├── pyproject.toml                # pip package metadata (name, deps, extras)
+├── browser_sandbox/               # the actual installable package
+│   ├── core/
+│   │   ├── browser_server.py     # runs INSIDE the container - Playwright + guardrails + HTTP API
+│   │   ├── client.py              # thin HTTP client - runs OUTSIDE the container, framework-agnostic
+│   │   ├── container.py           # programmatic container lifecycle (build/start/stop)
+│   │   └── dns_guard.py            # post-DNS SSRF protection (domains resolving to a private IP)
+│   ├── guardrails/
+│   │   ├── policy.py                # composes everything below - heart of the project
+│   │   ├── domain_allowlist.py      # per-session domain allowlist (exact match or regex)
+│   │   ├── network_guard.py         # private/reserved IP blocking (SSRF, no I/O)
+│   │   ├── file_guard.py            # download blocking by extension + magic bytes
+│   │   └── session_limits.py        # limit on pages navigated and session duration
+│   ├── audit/logger.py              # append-only JSONL log
+│   └── tools/
+│       ├── anthropic_tools.py       # tool_use schemas + dispatcher (Anthropic)
+│       └── langchain_tools.py       # StructuredTool + dispatcher (LangChain)
 ├── docker/
 │   ├── Dockerfile
-│   └── run.sh                 # brings up the container with every isolation flag
+│   └── run.sh                     # brings up the container with every isolation flag
 ├── examples/
-│   ├── trap_page.html         # Layer 3's trap page
-│   └── demo_agent.py          # demo mode (screenshots + formatted log)
+│   ├── trap_page.html             # Layer 3's trap page
+│   └── demo_agent.py              # demo mode (screenshots + formatted log)
+├── .github/workflows/ci.yml       # runs all 4 test layers on every push (real Docker, on the runner)
 └── tests/
     ├── test_guardrails_unit.py       # Layer 1 - no Playwright/Docker
     ├── test_sandbox_integration.py   # Layer 2 - real container, no LLM
@@ -132,26 +144,47 @@ slip through.
 
 ## How to plug it into another agent framework
 
-The agent never needs to import `guardrails/` or
-`core/browser_server.py` — it only speaks HTTP to the container (via
-`core/client.py`, or directly). To adapt to a **different** tool-calling
-format, the only thing that changes is the shape of each tool's schema
-in `tools/anthropic_tools.py` — the execution logic
-(`dispatch_tool_call`) doesn't change at all, because it only calls
-`BrowserSandboxClient`, which is plain HTTP:
+The agent never needs to import `browser_sandbox.guardrails` or
+`browser_sandbox.core.browser_server` — it only speaks HTTP to the
+container (via `browser_sandbox.core.client`, or directly). Two adapters
+already exist:
+
+**LangChain** (`pip install "browser-sandbox[langchain]"`):
 
 ```python
-# Anthropic (what this project uses)
+from browser_sandbox.core.client import BrowserSandboxClient
+from browser_sandbox.tools.langchain_tools import get_browser_sandbox_tools
+
+client = BrowserSandboxClient(base_url="http://localhost:8088")
+tools = get_browser_sandbox_tools(client)  # List[StructuredTool]
+
+from langchain.agents import create_react_agent
+agent = create_react_agent(llm, tools, prompt)
+```
+
+**Anthropic** (`pip install "browser-sandbox[anthropic]"`):
+
+```python
+from browser_sandbox.tools.anthropic_tools import BROWSER_TOOL_SCHEMAS, dispatch_tool_call
+# BROWSER_TOOL_SCHEMAS goes straight into the `tools=` param of client.messages.create()
+```
+
+To adapt to a **different** tool-calling format (raw OpenAI function
+calling, Claude Agent SDK, etc), the only thing that changes is the shape
+of each tool's schema — the execution logic doesn't change at all,
+because it only calls `BrowserSandboxClient`, which is plain HTTP:
+
+```python
+# Anthropic
 {"name": "navigate", "input_schema": {"type": "object", "properties": {...}}}
 
-# OpenAI function calling / LangChain Tool
+# OpenAI function calling
 {"name": "navigate", "parameters": {"type": "object", "properties": {...}}}
 ```
 
-In LangChain, for example, each schema becomes a `StructuredTool` whose
-`func` calls `dispatch_tool_call(client, "navigate", {...})`. In any
-other framework, the pattern is the same: take the schema, convert the
-format, point the dispatcher at the same `BrowserSandboxClient`.
+Take the schema, convert the format, point the dispatcher at the same
+`BrowserSandboxClient` — that's what `langchain_tools.py` does, and it's
+the pattern for any new framework.
 
 ## Failure modes the guardrails layer prevents
 
@@ -215,11 +248,28 @@ session expiry) and Layer 4 (4 tabs, sustained navigation, peak memory of
 Layer 3; the half that depends on a real LLM is conditional on a valid
 `ANTHROPIC_API_KEY` in whoever's environment runs it).
 
+## Installation
+
+Not yet published to PyPI/Docker Hub (no credentials to publish in this
+session) — but it's ready for that: a complete, versioned
+(`0.1.0`) `pyproject.toml`, with optional extras. For now, install from
+source:
+
+```bash
+git clone https://github.com/LucasArais/LinkedinPosts.git
+cd LinkedinPosts/browser-sandbox
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"          # includes anthropic + langchain-core for dev/tests
+# or, the minimum needed to use just the adapter you want:
+pip install -e ".[langchain]"    # or -e ".[anthropic]"
+```
+
+Once published, installation becomes `pip install "browser-sandbox[langchain]"`
+straight from PyPI, no need to clone the repo.
+
 ## How to run it
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
 cp .env.example .env   # fill in ANTHROPIC_API_KEY (only needed for Layer 3 and the demo)
 ```
 

@@ -37,9 +37,9 @@ import anthropic
 import pytest
 import requests
 
-from core.container import docker_available, image_exists, build_image, start_container
-from tools.anthropic_tools import BROWSER_TOOL_SCHEMAS, dispatch_tool_call
-from core.client import BrowserSandboxClient
+from browser_sandbox.core.container import docker_available, image_exists, build_image, start_container
+from browser_sandbox.tools.anthropic_tools import BROWSER_TOOL_SCHEMAS, dispatch_tool_call
+from browser_sandbox.core.client import BrowserSandboxClient
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 EXAMPLES_DIR = PROJECT_ROOT / "examples"

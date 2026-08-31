@@ -23,7 +23,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from core.container import ContainerHandle, build_image, docker_available, image_exists, start_container
+from browser_sandbox.core.container import ContainerHandle, build_image, docker_available, image_exists, start_container
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent

@@ -21,12 +21,12 @@ from typing import Optional
 from flask import Flask, jsonify, request as flask_request
 from playwright.sync_api import Browser, BrowserContext, Page, Route, sync_playwright
 
-from audit.logger import AuditLogger
-from core.dns_guard import hostname_resolves_to_blocked_ip
-from guardrails.domain_allowlist import build_domain_allowlist
-from guardrails.network_guard import is_ip_literal
-from guardrails.policy import BrowserSandboxPolicy, Decision, PolicyResult, extract_hostname
-from guardrails.session_limits import SessionLimiter, SessionLimits
+from browser_sandbox.audit.logger import AuditLogger
+from browser_sandbox.core.dns_guard import hostname_resolves_to_blocked_ip
+from browser_sandbox.guardrails.domain_allowlist import build_domain_allowlist
+from browser_sandbox.guardrails.network_guard import is_ip_literal
+from browser_sandbox.guardrails.policy import BrowserSandboxPolicy, Decision, PolicyResult, extract_hostname
+from browser_sandbox.guardrails.session_limits import SessionLimiter, SessionLimits
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("browser_sandbox")

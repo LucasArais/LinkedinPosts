@@ -26,6 +26,7 @@ MAX_DURATION="${3:-300}"
 SESSION_ID="sandbox-$(date +%s)"
 
 mkdir -p workspace downloads logs
+chmod 777 workspace downloads logs
 
 docker run --rm \
   --name browser-sandbox \

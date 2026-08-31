@@ -6,6 +6,7 @@ ficar saudavel via `/healthz`, e derruba. Usado pelos testes de integracao
 container a partir de Python, nao so da linha de comando.
 """
 
+import os
 import subprocess
 import time
 from dataclasses import dataclass
@@ -80,6 +81,14 @@ def start_container(
     logs = PROJECT_ROOT / "logs"
     for d in (workspace, downloads, logs):
         d.mkdir(parents=True, exist_ok=True)
+        # O container escreve nestes bind mounts como o usuario 'sandbox'
+        # (uid 1000), que quase certamente nao e o dono destas pastas no
+        # host (o uid de quem roda os testes varia: dev local, runner do
+        # CI, etc). chmod 777 aqui e seguro porque estas pastas so guardam
+        # log de auditoria, downloads ja filtrados pela policy, e fixtures
+        # de teste - nao segredo nenhum - e o isolamento real do container
+        # (--read-only, --cap-drop=ALL) nao depende disso.
+        os.chmod(d, 0o777)
 
     result = subprocess.run(
         [

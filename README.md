@@ -1,5 +1,7 @@
 # LinkedinPosts
 
+🇧🇷 Português | [🇺🇸 English](README.en.md)
+
 Demos, experimentos e provas de conceito de código que eu construo para acompanhar
 meus posts no LinkedIn sobre IA, Cloud, Dados e Engenharia de Software. Cada pasta
 neste repo é um projeto independente e autocontido — pense nisso como um diário

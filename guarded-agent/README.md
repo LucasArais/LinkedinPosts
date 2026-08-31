@@ -1,5 +1,7 @@
 # guarded-agent
 
+🇧🇷 Português | [🇺🇸 English](README.en.md)
+
 Um agente autônomo (Claude + tool calling) com uma camada de governança/segurança
 independente do modelo em volta de cada chamada de ferramenta.
 

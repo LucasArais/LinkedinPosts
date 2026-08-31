@@ -1,5 +1,7 @@
 # browser-sandbox
 
+🇧🇷 Português | [🇺🇸 English](README.en.md)
+
 Um browser headless (Playwright + Chromium), isolado em container Docker,
 que um agente LLM controla via tool calling — pensado para ser **plugável
 em qualquer framework de agente**, não acoplado ao meu próprio código.

@@ -5,11 +5,11 @@ on:
     branches: [main]
     paths:
       - "browser-sandbox/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/browser-sandbox-ci.yml"
   pull_request:
     paths:
       - "browser-sandbox/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/browser-sandbox-ci.yml"
 
 defaults:
   run:

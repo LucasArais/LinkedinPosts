@@ -2,7 +2,7 @@
 
 [🇧🇷 Português](README.md) | 🇺🇸 English
 
-[![CI](https://github.com/LucasArais/LinkedinPosts/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasArais/LinkedinPosts/actions/workflows/ci.yml)
+[![CI](https://github.com/LucasArais/LinkedinPosts/actions/workflows/browser-sandbox-ci.yml/badge.svg)](https://github.com/LucasArais/LinkedinPosts/actions/workflows/browser-sandbox-ci.yml)
 
 A headless browser (Playwright + Chromium), isolated in a Docker
 container, controlled by an LLM agent via tool calling — built to be
@@ -77,12 +77,15 @@ browser-sandbox/
 ├── examples/
 │   ├── trap_page.html             # Layer 3's trap page
 │   └── demo_agent.py              # demo mode (screenshots + formatted log)
-├── .github/workflows/ci.yml       # runs all 4 test layers on every push (real Docker, on the runner)
 └── tests/
     ├── test_guardrails_unit.py       # Layer 1 - no Playwright/Docker
     ├── test_sandbox_integration.py   # Layer 2 - real container, no LLM
     ├── test_adversarial_agent.py     # Layer 3 - trap page + real agent
     └── test_load.py                  # Layer 4 - light load + docker stats
+
+# the CI workflow lives at the repo root (required by GitHub Actions),
+# not inside this folder:
+# ../.github/workflows/browser-sandbox-ci.yml
 ```
 
 ### Container isolation

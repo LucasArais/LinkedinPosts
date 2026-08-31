@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.pytest_cache/
+logs/*.jsonl
+workspace/*
+!workspace/.gitkeep
+downloads/*
+!downloads/.gitkeep
+examples/demo_screenshots/*
+!examples/demo_screenshots/.gitkeep
+.DS_Store

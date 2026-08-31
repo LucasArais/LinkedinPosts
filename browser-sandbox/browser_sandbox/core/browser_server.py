@@ -55,7 +55,16 @@ class BrowserSandboxSession:
         # Chromium roda sem acesso a variaveis de ambiente do host: o
         # processo Python deste servidor so recebe o que o `docker run`
         # explicitamente passar com `-e`; por padrao, nada.
-        self.browser: Browser = self._pw.chromium.launch(headless=True, args=["--no-sandbox"])
+        #
+        # --disable-dev-shm-usage: o /dev/shm padrao de um container Docker
+        # e minusculo (64MB) e insuficiente para o Chromium: o processo de
+        # browser chega a iniciar, mas a renderizacao de pagina real crasha
+        # (erro classico de "Chromium em Docker"). Essa flag manda o
+        # Chromium usar /tmp em vez de /dev/shm, funcionando
+        # independentemente do --shm-size configurado no host.
+        self.browser: Browser = self._pw.chromium.launch(
+            headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"]
+        )
         self.context: BrowserContext = self.browser.new_context(accept_downloads=True)
         self.context.route("**/*", self._route_handler)
         self.context.on("page", self._register_download_handler)

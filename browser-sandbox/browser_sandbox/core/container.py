@@ -32,6 +32,15 @@ class ContainerHandle:
         return f"http://localhost:{self.port}"
 
     def stop(self) -> None:
+        # Impresso via stdout normal (nao stderr) de proposito: o pytest so
+        # mostra output capturado de testes que FALHARAM (a menos que rode
+        # com -s), entao isso vira log de debug gratuito exatamente quando
+        # mais precisamos dele - sem poluir a saida de testes que passam.
+        logs = subprocess.run(
+            ["docker", "logs", self.name], capture_output=True, text=True, timeout=15
+        )
+        if logs.stdout or logs.stderr:
+            print(f"--- docker logs {self.name} ---\n{logs.stdout}{logs.stderr}--- fim dos logs ---")
         subprocess.run(["docker", "stop", self.name], capture_output=True, timeout=30)
 
 

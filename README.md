@@ -16,6 +16,7 @@ público de coisas que estou explorando, não um produto único.
 |---|---|---|
 | [guarded-agent](guarded-agent/) | Agente autônomo baseado em LLM (Claude + tool calling) com uma camada de guardrails/circuit breaker independente do modelo: allowlist de ferramentas por tarefa, limite de chamadas, kill switch e log de auditoria em JSONL. | Python, Anthropic API |
 | [browser-sandbox](browser-sandbox/) | Browser headless (Playwright) isolado em container Docker, controlado por um agente via tool calling: allowlist de domínio, bloqueio de SSRF/IP privado, checagem de download por magic bytes e limites de sessão. Empacotado como pip package de verdade, com adapters prontos para Anthropic e LangChain. | Python, Playwright, Docker, LangChain, Anthropic API |
+| [steerable-agent](steerable-agent/) | Orquestrador que executa um plano como um grafo de tarefas persistido (DAG) e aceita injeção de novas instruções em tempo de execução — via uma pasta `inbox/` — sem perder o trabalho já concluído. A invariante de segurança (nós concluídos são imutáveis) é garantida fora do modelo e reforçada por teste. | Python, Anthropic API, rich |
 
 Cada projeto tem seu próprio `README.md` com arquitetura, decisões de design e
 instruções de como rodar — comece por lá.
@@ -39,6 +40,7 @@ sugestão, um PR ou uma issue são muito bem-vindos.
 LinkedinPosts/
 ├── guarded-agent/     # projeto 1: agente autônomo com guardrails
 ├── browser-sandbox/   # projeto 2: browser sandboxed para agentes
+├── steerable-agent/   # projeto 3: orquestrador de grafo de tarefas com replan em runtime
 ├── ...                # próximos projetos entram aqui, uma pasta cada
 └── README.md          # este arquivo
 ```

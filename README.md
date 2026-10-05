@@ -18,6 +18,7 @@ público de coisas que estou explorando, não um produto único.
 | [browser-sandbox](browser-sandbox/) | Browser headless (Playwright) isolado em container Docker, controlado por um agente via tool calling: allowlist de domínio, bloqueio de SSRF/IP privado, checagem de download por magic bytes e limites de sessão. Empacotado como pip package de verdade, com adapters prontos para Anthropic e LangChain. | Python, Playwright, Docker, LangChain, Anthropic API |
 | [steerable-agent](steerable-agent/) | Orquestrador que executa um plano como um grafo de tarefas persistido (DAG) e aceita injeção de novas instruções em tempo de execução — via uma pasta `inbox/` — sem perder o trabalho já concluído. A invariante de segurança (nós concluídos são imutáveis) é garantida fora do modelo e reforçada por teste. | Python, Anthropic API, rich |
 | [mistake-memory](mistake-memory/) | Memória episódica para agentes: registra abordagem, outcome e motivo da falha, e bloqueia ativamente a repetição de uma abordagem já reprovada 3x — mesmo que o próprio modelo argumente que dessa vez seria diferente. Busca por embeddings locais, enforcement fora do modelo. | Python, SQLite, sentence-transformers, Anthropic API |
+| [scoped-memory](scoped-memory/) | Memória de agente particionada por usuário e por time: o filtro de escopo mora no SQL (não no modelo), o histórico de chat também é separado por usuário, e memória de time só é gravada quando pedida explicitamente. Um teste de vazamento prova que a memória da alice nunca chega ao bob — nem no mesmo time, nem trocando de usuário na mesma sessão. | Python, SQLite, OpenRouter, rich |
 
 Cada projeto tem seu próprio `README.md` com arquitetura, decisões de design e
 instruções de como rodar — comece por lá.
@@ -43,6 +44,7 @@ LinkedinPosts/
 ├── browser-sandbox/   # projeto 2: browser sandboxed para agentes
 ├── steerable-agent/   # projeto 3: orquestrador de grafo de tarefas com replan em runtime
 ├── mistake-memory/    # projeto 4: memoria episodica com enforcement de bloqueio
+├── scoped-memory/     # projeto 5: memoria particionada por usuario/time com teste de vazamento
 ├── ...                # próximos projetos entram aqui, uma pasta cada
 └── README.md          # este arquivo
 ```
